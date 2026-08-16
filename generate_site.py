@@ -360,6 +360,7 @@ def build_homepage():
         <a href="tel:{PHONE_TEL}" class="btn btn-outline">{ICON_PHONE} Call {PHONE_DISPLAY}</a>
       </div>
       <div class="hero-reviews"><span class="stars">{STARS}</span> 5.0 out of 5 &mdash; from Bournemouth &amp; Poole homeowners</div>
+      <div class="callout" style="margin-top:24px;background:rgba(255,255,255,.08);border-left-color:var(--gold);"><p style="color:#e7ebf3;"><strong>Quick answer:</strong> a new driveway in Bournemouth typically costs <strong>£30&ndash;£110 per m&sup2;</strong> installed, depending on material &mdash; gravel is cheapest, resin bound the most premium. Most jobs are completed in 1&ndash;3 days by fully insured local installers.</p></div>
     </div>
     {quote_form()}
   </div>
@@ -506,6 +507,8 @@ HOME_FAQ = [
     ("Do I need planning permission for a new driveway?", "Usually not, provided the surface is permeable (gravel, permeable block paving or resin bound with a SUDS-compliant base) or drains onto your own garden rather than the street. Impermeable surfaces over 5m&sup2; may require permission &mdash; we can advise during your free site visit."),
     ("Do you handle dropped kerb applications?", "Yes &mdash; if your project needs a dropped kerb we can advise on the BCP Council application and permission process as part of your quote."),
     ("Which areas do you cover?", "We install driveways throughout Bournemouth, Poole, Christchurch, Ferndown, Wimborne, New Milton and the surrounding Dorset coast."),
+    ("Which driveway material is best?", "There&rsquo;s no single &lsquo;best&rsquo; material &mdash; tarmac suits budget-conscious, high-use driveways; block paving offers the most design choice; resin bound gives a premium, low-maintenance finish; and gravel is the most affordable, fastest-to-install option. We&rsquo;ll recommend the best fit for your property and budget during your free quote."),
+    ("Are you fully insured?", "Yes &mdash; every job is covered by public liability insurance, and all workmanship is backed by a written guarantee."),
 ]
 
 # ========================================================== MATERIAL PAGES ===
@@ -533,6 +536,7 @@ def build_material_page(key):
       <a href="#quote" class="btn btn-primary">Get Your Free Quote &rarr;</a>
       <a href="tel:{PHONE_TEL}" class="btn btn-outline">{ICON_PHONE} Call {PHONE_DISPLAY}</a>
     </div>
+    <div class="callout" style="margin-top:28px;max-width:680px;background:rgba(255,255,255,.08);border-left-color:var(--gold);"><p style="color:#e7ebf3;"><strong>Quick answer:</strong> a {data['name']} driveway in Bournemouth typically costs from {data['price']} per m&sup2; installed, and {data['lifespan'].lower()} with normal use and basic maintenance.</p></div>
   </div>
 </section>"""
 
@@ -638,6 +642,8 @@ MATERIAL_PAGE_DATA = {
             ("Is tarmac cheaper than block paving?", "Yes &mdash; tarmac is generally <strong>30&ndash;50% cheaper</strong> than block paving per m&sup2;, making it a popular choice for larger driveways."),
             ("Can you repair an existing tarmac driveway instead of replacing it?", "Often, yes. Cracks, potholes and sunken areas can frequently be resurfaced rather than fully replaced &mdash; ask us about our <a href=\"driveway-repairs-resurfacing-bournemouth.html\">repair &amp; resurfacing service</a> when you request your quote."),
             ("Does tarmac need much maintenance?", "Very little &mdash; occasional sweeping, prompt repair of small cracks, and resealing every few years is usually enough to maximise its lifespan."),
+            ("What colour options are available for a tarmac driveway?", "Standard tarmac is black, though a red-tint or buff finish is available at a small extra cost if you want to soften the look against a lighter-coloured property."),
+            ("Is tarmac suitable for a steep or sloped driveway?", "Yes &mdash; properly laid tarmac copes well with slopes and inclines, and its smooth, consistent surface is often preferable to loose materials like gravel on a gradient."),
         ],
     },
     "block": {
@@ -674,6 +680,8 @@ MATERIAL_PAGE_DATA = {
             ("Can block paving be repaired easily?", "Yes &mdash; this is one of its biggest advantages. If a block cracks or an oil stain won&rsquo;t lift, we simply replace the individual block rather than resurfacing the whole driveway."),
             ("Is block paving permeable?", "Standard block paving isn&rsquo;t, but permeable block paving systems are available and can help you meet UK SUDS drainage rules without needing planning permission."),
             ("How do I keep weeds from growing between the blocks?", "Properly compacted jointing sand (or polymeric sand) greatly reduces weed growth. An occasional re-sand and jet wash keeps the surface looking new."),
+            ("How long does block paving take to install?", "Most single or double driveways are completed in 2&ndash;4 days, depending on size, the pattern chosen and whether the old surface needs excavating first."),
+            ("Can block paving be laid over an existing concrete driveway?", "Not directly &mdash; the old surface is normally excavated so we can lay a proper compacted sub-base underneath. Laying straight over concrete or tarmac can lead to instability and early failure."),
         ],
     },
     "resin": {
@@ -710,6 +718,8 @@ MATERIAL_PAGE_DATA = {
             ("Is resin bound worth the extra cost?", "Many homeowners feel so &mdash; it offers a genuinely premium finish, near-zero weed growth, full SUDS compliance and a smooth surface that&rsquo;s easy to walk and wheel on, for roughly 20&ndash;25 years."),
             ("Does resin bound crack like concrete?", "Because it has a degree of flexibility, resin bound is generally more resistant to hairline cracking from ground movement than poured concrete or old tarmac."),
             ("How do I clean a resin bound driveway?", "A regular sweep and an occasional pressure wash on a low setting is normally all that&rsquo;s needed to keep it looking new."),
+            ("Is a resin bound driveway slippery when wet?", "No &mdash; the aggregate finish gives a textured, slip-resistant surface, which is one reason it&rsquo;s a popular choice for paths and driveways with wheelchair or pushchair access."),
+            ("How long does a resin bound driveway take to install?", "Most driveways are laid within 1&ndash;2 days, though the surface needs roughly 24&ndash;48 hours to cure fully before regular vehicle use."),
         ],
     },
     "gravel": {
@@ -746,6 +756,8 @@ MATERIAL_PAGE_DATA = {
             ("Will gravel scatter onto the road or pavement?", "Proper edging (which we always include) contains the stone and prevents it spreading beyond the driveway."),
             ("Is gravel a good option for drainage?", "Yes &mdash; gravel is one of the most naturally permeable driveway surfaces, which is why it&rsquo;s a popular, planning-permission-friendly choice."),
             ("Can I choose different gravel colours?", "Yes, we offer a range of stone types and colours, from traditional golden gravel to darker slate chippings &mdash; samples available at your free site visit."),
+            ("What&rsquo;s the ideal depth for a gravel driveway?", "We typically lay gravel to a depth of around 50mm over a properly compacted sub-base &mdash; deep enough for a stable, comfortable surface without excessive stone movement."),
+            ("Is gravel a good choice for a driveway used daily?", "Yes, with a well-compacted sub-base and edging, gravel copes well with daily use &mdash; occasional raking and top-ups in high-traffic wheel tracks keeps it looking even."),
         ],
     },
 }
@@ -774,6 +786,7 @@ def build_location_page(key):
       <a href="#quote" class="btn btn-primary">Get Your Free Quote &rarr;</a>
       <a href="tel:{PHONE_TEL}" class="btn btn-outline">{ICON_PHONE} Call {PHONE_DISPLAY}</a>
     </div>
+    <div class="callout" style="margin-top:28px;max-width:680px;background:rgba(255,255,255,.08);border-left-color:var(--gold);"><p style="color:#e7ebf3;"><strong>Quick answer:</strong> yes &mdash; we install and repair tarmac, block paving, resin bound and gravel driveways throughout {data['name']}, with free no-obligation quotes and most site visits arranged within a few days.</p></div>
   </div>
 </section>"""
 
@@ -841,6 +854,8 @@ LOCATION_PAGE_DATA = {
         "faq": [
             ("Do you cover all of Poole, including Sandbanks and Broadstone?", "Yes &mdash; we cover Poole and the surrounding harbour side including Sandbanks, Broadstone, Canford Heath and Hamworthy."),
             ("How quickly can you visit for a quote in Poole?", "We typically offer free site visits within a few days of enquiry &mdash; get in touch and we&rsquo;ll confirm a time that suits you."),
+            ("How much does a driveway cost in Poole?", "Pricing in Poole is in line with the wider Bournemouth area &mdash; roughly £30&ndash;£110 per m&sup2; depending on material. See our full <a href=\"driveway-cost-guide-bournemouth.html\">cost guide</a> for a breakdown."),
+            ("Which driveway material suits coastal properties near Sandbanks best?", "Resin bound and block paving tend to hold up particularly well to coastal weather, though we&rsquo;ll advise honestly based on your specific property and budget."),
         ],
     },
     "christchurch": {
@@ -854,6 +869,8 @@ LOCATION_PAGE_DATA = {
         "faq": [
             ("Do you cover Highcliffe and Mudeford as well as Christchurch town?", "Yes &mdash; our Christchurch coverage includes Highcliffe, Mudeford and the surrounding villages."),
             ("Can you install a driveway on a period property in Christchurch?", "Yes, we regularly work on period properties &mdash; block paving and resin bound are popular choices where kerb appeal matters most."),
+            ("Do you offer free quotes for driveways in Christchurch?", "Yes &mdash; every quote in Christchurch and the surrounding area is free and no-obligation, with a site visit to confirm an exact, fixed price."),
+            ("How long does a typical driveway installation take in Christchurch?", "Most jobs are completed in 1&ndash;3 days depending on size and material &mdash; the same timeframe as the rest of our Dorset coverage area."),
         ],
     },
     "ferndown": {
@@ -867,6 +884,8 @@ LOCATION_PAGE_DATA = {
         "faq": [
             ("Do you cover West Moors and the villages around Ferndown?", "Yes &mdash; we cover Ferndown and the surrounding villages including West Moors and Longham."),
             ("What&rsquo;s the most popular driveway type in Ferndown?", "Block paving and gravel are particularly popular locally, though we install all four surfaces depending on your property and budget."),
+            ("Can you handle larger, multi-car driveways in Ferndown?", "Yes &mdash; Ferndown&rsquo;s larger plots are well suited to multi-car driveways, and we regularly quote for wraparound and large-format projects."),
+            ("Do you offer dropped kerb advice for Ferndown properties?", "Yes &mdash; if your Ferndown driveway project needs a new or altered dropped kerb, we can advise on the BCP Council application process as part of your quote."),
         ],
     },
     "wimborne": {
@@ -880,6 +899,8 @@ LOCATION_PAGE_DATA = {
         "faq": [
             ("Is gravel a good option for a period property in Wimborne?", "Often, yes &mdash; gravel and resin bound tend to suit period and rural properties particularly well, though the right choice always depends on your specific driveway and budget."),
             ("Do you handle driveways on rural or unadopted roads near Wimborne?", "Yes, we regularly quote for rural properties &mdash; access and ground conditions are assessed during your free site visit."),
+            ("Do you need planning permission for a driveway in Wimborne Minster's conservation area?", "Possibly, depending on the property and surface chosen &mdash; permeable materials like gravel or SUDS-compliant resin bound usually avoid the need for permission. We can advise during your free site visit."),
+            ("How far outside Wimborne do you cover?", "We cover Wimborne Minster and the surrounding villages and rural areas &mdash; get in touch to confirm coverage for your specific postcode."),
         ],
     },
     "new-milton": {
@@ -893,6 +914,8 @@ LOCATION_PAGE_DATA = {
         "faq": [
             ("Do you cover Barton on Sea as well as New Milton?", "Yes &mdash; our New Milton coverage extends to Barton on Sea and the immediate surrounding area."),
             ("Is New Milton within your standard coverage area?", "Yes, New Milton is one of our core coverage areas alongside Bournemouth, Poole and Christchurch."),
+            ("What driveway materials are most popular in New Milton?", "Tarmac and block paving are the most requested locally, though we install all four materials &mdash; tarmac, block paving, resin bound and gravel &mdash; depending on your property and budget."),
+            ("Can I get a same-week quote for a driveway in New Milton?", "In most cases, yes &mdash; contact us and we&rsquo;ll aim to arrange a free site visit within a few days."),
         ],
     },
 }
@@ -1048,6 +1071,7 @@ def build_service_page(key):
       <a href="#quote" class="btn btn-primary">Get Your Free Quote &rarr;</a>
       <a href="tel:{PHONE_TEL}" class="btn btn-outline">{ICON_PHONE} Call {PHONE_DISPLAY}</a>
     </div>
+    <div class="callout" style="margin-top:28px;max-width:680px;background:rgba(255,255,255,.08);border-left-color:var(--gold);"><p style="color:#e7ebf3;">{data['geo_answer']}</p></div>
   </div>
 </section>"""
 
@@ -1093,6 +1117,7 @@ SERVICE_PAGE_DATA = {
         "meta_title": "Driveway Repairs & Resurfacing Bournemouth",
         "meta_description": "Cracked, sunken or pothole-damaged driveway? Fast, affordable driveway repair and resurfacing across Bournemouth. Free quote.",
         "intro": "Cracked, sunken or pothole-damaged driveway? Before you pay for a full replacement, ask us whether a repair or resurface could save you money.",
+        "geo_answer": "<strong>Quick answer:</strong> driveway repairs and resurfacing typically cost 30&ndash;50% less than a full replacement, and most jobs are completed within a single day &mdash; we'll always tell you honestly if a repair is a viable option before recommending replacement.",
         "benefits_eyebrow": "Why Repair First",
         "benefits_heading": "Often Cheaper Than a Full Replacement",
         "benefits": [
@@ -1106,6 +1131,8 @@ SERVICE_PAGE_DATA = {
             ("How do I know if I need a repair or a full replacement?", "If the sub-base is stable and damage is limited to the surface (cracks, potholes, worn patches), a repair or resurface is usually possible. If more than 30&ndash;40% of the area is affected or the base has failed, replacement is often better value long-term."),
             ("How much does driveway resurfacing cost?", "Resurfacing is typically 30&ndash;50% cheaper than a full replacement, since the excavation and sub-base work is avoided. Exact pricing depends on the size and condition of your driveway &mdash; request a free quote for a fixed price."),
             ("How long does a repair take?", "Most repairs and resurfacing jobs are completed in a single day."),
+            ("Can you repair a driveway before selling my house?", "Yes &mdash; a quick, affordable repair or resurface can noticeably improve kerb appeal ahead of a sale, often for a fraction of the cost of a full replacement."),
+            ("Do you repair block paving as well as tarmac?", "Yes &mdash; we repair and resurface tarmac, block paving and can advise on resin bound and gravel driveways showing signs of wear."),
         ],
         "cta_heading": "Get a Free Repair or Resurfacing Quote",
         "cta_sub": "We&rsquo;ll give you honest advice on whether to repair or replace &mdash; no pressure either way.",
@@ -1116,6 +1143,7 @@ SERVICE_PAGE_DATA = {
         "meta_title": "Dropped Kerb Installation Bournemouth | Costs & Permits",
         "meta_description": "Need a dropped kerb in Bournemouth? We handle council permits and installation. Find out costs and how the process works.",
         "intro": "Planning a new driveway that crosses the pavement? You&rsquo;ll need a dropped kerb &mdash; we handle the BCP Council permission process and installation from start to finish.",
+        "geo_answer": "<strong>Quick answer:</strong> yes, a dropped kerb requires separate permission from BCP Council even if your driveway itself doesn't need planning permission &mdash; we handle the application and installation together as part of your quote.",
         "benefits_eyebrow": "How We Help",
         "benefits_heading": "We Handle the Council Process For You",
         "benefits": [
@@ -1129,6 +1157,8 @@ SERVICE_PAGE_DATA = {
             ("Do I need permission for a dropped kerb?", "Yes &mdash; lowering a kerb to cross a public footway requires permission from <strong>BCP Council</strong>, even if the driveway itself doesn&rsquo;t need planning permission."),
             ("How much does a dropped kerb cost?", "Costs vary based on kerb length, footway width and any utilities beneath the pavement. We&rsquo;ll give you a clear, fixed figure covering both the council fee and installation as part of your free quote."),
             ("How long does the council approval take?", "Timescales vary by council workload &mdash; we&rsquo;ll give you a realistic estimate when we submit your application and keep you updated throughout."),
+            ("Can I install a dropped kerb myself?", "No &mdash; dropped kerb work on a public footway must be carried out by an approved contractor to council standards. We handle the full process for you."),
+            ("Does a dropped kerb application ever get refused?", "Occasionally, usually due to visibility, nearby trees, utilities or on-street parking restrictions &mdash; we'll flag any likely issues before you apply."),
         ],
         "cta_heading": "Get Help With Your Dropped Kerb",
         "cta_sub": "From council permission to installation &mdash; one team, one quote.",
