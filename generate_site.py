@@ -195,6 +195,19 @@ def quote_form(context_note="Free, no-obligation quotes for Bournemouth &amp; Po
   <p class="quote-fineprint">By submitting you agree to be contacted about your enquiry. No spam, ever. See our <a href="#">privacy policy</a>.</p>
 </div>"""
 
+def quote_section(context_note="Free, no-obligation quotes for Bournemouth &amp; Poole homeowners."):
+    """A full quote-form section for pages other than the homepage (which embeds its own).
+    Guarantees every page has an element with id="quote" so nav/CTA #quote links actually work."""
+    return f"""
+<section style="background:var(--paper);">
+  <div class="container" style="max-width:600px;">
+    <div class="eyebrow center" style="justify-content:center;">Free Quote</div>
+    <h2 class="center">Get Your Free Driveway Quote</h2>
+    <p class="lede center" style="margin:0 auto 32px;">Tell us a little about your project and we&rsquo;ll get back to you within 24 hours.</p>
+    {quote_form(context_note)}
+  </div>
+</section>"""
+
 def trust_bar():
     items = [
         (ICON_SHIELD, "Fully insured &amp; guaranteed"),
@@ -600,7 +613,7 @@ def build_material_page(key):
 
     final_cta = cta_band(f"Get a Free {data['name']} Driveway Quote", "Fixed pricing, fully insured installers and a written guarantee &mdash; talk to us today.")
 
-    body = page_hero + trust_bar() + benefits + process + price_section + faq_html + related_html + final_cta
+    body = page_hero + trust_bar() + benefits + process + price_section + faq_html + related_html + quote_section(f"Free, no-obligation quotes for {data['name']} driveways in Bournemouth.") + final_cta
     return page_wrap(
         data['href'], body,
         title=data['meta_title'], description=data['meta_description'],
@@ -836,7 +849,7 @@ def build_location_page(key):
 
     final_cta = cta_band(f"Get a Free Driveway Quote in {data['name']}", "Fixed pricing, fully insured installers and a written guarantee &mdash; talk to us today.")
 
-    body = page_hero + trust_bar() + materials_section + local + faq_html + areas_html + final_cta
+    body = page_hero + trust_bar() + materials_section + local + faq_html + areas_html + quote_section(f"Free, no-obligation quotes for {data['name']} homeowners.") + final_cta
     return page_wrap(
         data['href'], body, title=data['meta_title'], description=data['meta_description'],
         canonical_path=data['href'], schema_blocks=schema_blocks
@@ -1000,7 +1013,7 @@ def build_cost_guide():
 
     final_cta = cta_band("Want an Exact Price, Not Just a Guide?", "Get a free, fixed quote for your driveway &mdash; tailored to your size, material and site.")
 
-    body = page_hero + intro + table + factors + material_links + faq_html + final_cta
+    body = page_hero + intro + table + factors + material_links + faq_html + quote_section() + final_cta
     return page_wrap(
         "driveway-cost-guide-bournemouth.html", body,
         title=f"Driveway Cost Guide Bournemouth {YEAR} | Prices Per m&sup2;",
@@ -1043,7 +1056,7 @@ def build_faq_page():
 
     final_cta = cta_band("Still Have a Question?", "Call our local team or request a free quote &mdash; we&rsquo;re happy to talk through your project with no pressure to book.")
 
-    body = page_hero + trust_bar() + faq_html + final_cta
+    body = page_hero + trust_bar() + faq_html + quote_section() + final_cta
     return page_wrap(
         "faq.html", body,
         title="Driveway FAQs | Bournemouth Driveway Installers",
@@ -1104,7 +1117,7 @@ def build_service_page(key):
 </section>"""
 
     final_cta = cta_band(data['cta_heading'], data['cta_sub'])
-    body = page_hero + trust_bar() + benefits + faq_html + related_html + final_cta
+    body = page_hero + trust_bar() + benefits + faq_html + related_html + quote_section() + final_cta
     return page_wrap(
         data['href'], body, title=data['meta_title'], description=data['meta_description'],
         canonical_path=data['href'], schema_blocks=schema_blocks
