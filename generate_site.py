@@ -4,7 +4,8 @@
 Generates the static Bournemouth Driveway Pros lead-gen site.
 Run: python3 generate_site.py
 """
-import os, json
+import os, json, datetime
+from blog_data import BLOG_POSTS
 
 OUT = os.path.dirname(os.path.abspath(__file__))
 
@@ -16,6 +17,7 @@ EMAIL = "hello@bournemouthdrivewaypros.co.uk"            # PLACEHOLDER
 ADDRESS_LINE = "Bournemouth, BH1, Dorset"                # PLACEHOLDER (no fixed shopfront)
 YEAR = "2026"
 FORM_ACTION = "https://formspree.io/f/YOUR_FORM_ID"      # PLACEHOLDER — see README.md to activate
+BLOG_START_DATE = datetime.date(2026, 8, 17)              # first post's publish date; +1 day per list position
 
 # ---------------------------------------------------------------- icons ----
 ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
@@ -131,7 +133,7 @@ def header(active_href=""):
     mobile_items = "\n".join(
         f'<a href="{href}">{label}</a>' for label, href in [("Home","index.html")] +
         [(l,h) for l,h,_ in MATERIAL_PAGES] +
-        [("Cost Guide","driveway-cost-guide-bournemouth.html"), ("FAQs","faq.html"), ("Contact","contact.html")]
+        [("Cost Guide","driveway-cost-guide-bournemouth.html"), ("FAQs","faq.html"), ("Guides","blog.html"), ("Contact","contact.html")]
     )
     return f"""
 <header class="site-header">
@@ -148,6 +150,7 @@ def header(active_href=""):
       </div>
       <a href="driveway-cost-guide-bournemouth.html">Cost Guide</a>
       <a href="faq.html">FAQs</a>
+      <a href="blog.html">Guides</a>
       <a href="contact.html">Contact</a>
     </nav>
     <div class="nav-cta-group">
@@ -269,6 +272,7 @@ def footer():
         <a href="contact.html">Contact Us</a>
         <a href="driveway-cost-guide-bournemouth.html">Cost Guide</a>
         <a href="faq.html">FAQs</a>
+        <a href="blog.html">Driveway Guides</a>
       </div>
     </div>
     <div class="footer-bottom">
@@ -1225,6 +1229,168 @@ def build_contact_page():
         canonical_path="contact.html", schema_blocks=schema_blocks
     )
 
+# ================================================================== BLOG ===
+
+def blog_post_href(slug):
+    return f"{slug}.html"
+
+def blog_publish_date(index):
+    """index: 0-based position in BLOG_POSTS."""
+    return BLOG_START_DATE + datetime.timedelta(days=index)
+
+def _today():
+    """Real 'today', unless overridden for testing via BLOG_PUBLISH_AS_OF=YYYY-MM-DD."""
+    override = os.environ.get("BLOG_PUBLISH_AS_OF")
+    if override:
+        return datetime.date.fromisoformat(override)
+    return datetime.date.today()
+
+def is_published(index):
+    """A post goes live automatically once its scheduled publish date has arrived.
+    Re-running generate_site.py (e.g. daily, via GitHub Actions) naturally drip-feeds
+    the 30-post queue one article per day with no extra state file needed."""
+    return blog_publish_date(index) <= _today()
+
+def published_posts():
+    """[(index, post), ...] for every post whose publish date has arrived, in order."""
+    return [(i, p) for i, p in enumerate(BLOG_POSTS) if is_published(i)]
+
+def build_blog_post(index):
+    """Builds one blog article page. `index` is its position in BLOG_POSTS
+    (also used to derive its publish date for the daily-cadence plan)."""
+    post = BLOG_POSTS[index]
+    pub_date = blog_publish_date(index)
+    pub_date_iso = pub_date.isoformat()
+    pub_date_human = pub_date.strftime("%d %B %Y")
+
+    schema_blocks = [LOCAL_BUSINESS_SCHEMA]
+    crumbs_html, crumbs_schema = breadcrumbs([("Home", "index.html"), ("Driveway Guides", "blog.html"), (post["title"], None)])
+    schema_blocks.append(crumbs_schema)
+
+    article_schema = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": post["title"],
+        "description": post["meta_description"],
+        "datePublished": pub_date_iso,
+        "dateModified": pub_date_iso,
+        "author": {"@type": "Organization", "name": SITE_NAME},
+        "publisher": {"@type": "Organization", "name": SITE_NAME},
+        "mainEntityOfPage": {"@type": "WebPage", "@id": f"{DOMAIN}/{blog_post_href(post['slug'])}"},
+    }
+    schema_blocks.append(article_schema)
+
+    page_hero = f"""
+<section class="page-hero">
+  <div class="container">
+    {crumbs_html.replace('class="breadcrumbs container"','class="breadcrumbs" style="padding-top:0;color:#9aa6bb;"')}
+    <div class="eyebrow" style="color:var(--gold);">{post['cluster']}</div>
+    <h1>{post['title']}</h1>
+    <p class="lede" style="color:#c9d2e0;">Published {pub_date_human} &middot; Bournemouth Driveway Pros Guides</p>
+    <div class="callout" style="margin-top:20px;max-width:720px;background:rgba(255,255,255,.08);border-left-color:var(--gold);"><p style="color:#e7ebf3;"><strong>Quick answer:</strong> {post['geo_answer']}</p></div>
+  </div>
+</section>"""
+
+    sections_html = "".join(f"<h2>{h}</h2>{body}" for h, body in post["sections"])
+    article_body = f"""
+<section>
+  <div class="container article-body" style="max-width:760px;">
+    {sections_html}
+  </div>
+</section>"""
+
+    faq_html, faq_schema = faq_block(post["faq"], heading="Related Questions")
+    schema_blocks.append(faq_schema)
+
+    published_slugs = {p["slug"] for _, p in published_posts()}
+    related_posts = [p for p in BLOG_POSTS if p["slug"] in post["related"] and p["slug"] in published_slugs]
+    related_html = ""
+    if related_posts:
+        cards = "".join(
+            f'<a class="related-card" href="{blog_post_href(p["slug"])}">{p["title"]} {ICON_ARROW}</a>'
+            for p in related_posts
+        )
+        related_html = f"""
+<section style="background:var(--paper);">
+  <div class="container" style="max-width:760px;">
+    <div class="eyebrow">Keep Reading</div>
+    <h2>Related Guides</h2>
+    <div class="related-posts-grid">{cards}</div>
+  </div>
+</section>"""
+
+    final_cta = cta_band("Ready to Get a Free Driveway Quote?", "Fixed pricing, fully insured local installers and a written guarantee &mdash; talk to us today.")
+
+    body = page_hero + article_body + faq_html + related_html + quote_section() + final_cta
+    return page_wrap(
+        "blog.html", body,
+        title=post["meta_title"], description=post["meta_description"],
+        canonical_path=blog_post_href(post["slug"]), schema_blocks=schema_blocks
+    )
+
+def build_blog_index():
+    schema_blocks = [LOCAL_BUSINESS_SCHEMA]
+    crumbs_html, crumbs_schema = breadcrumbs([("Home", "index.html"), ("Driveway Guides", None)])
+    schema_blocks.append(crumbs_schema)
+
+    page_hero = f"""
+<section class="page-hero">
+  <div class="container">
+    {crumbs_html.replace('class="breadcrumbs container"','class="breadcrumbs" style="padding-top:0;color:#9aa6bb;"')}
+    <div class="eyebrow" style="color:var(--gold);">Driveway Guides</div>
+    <h1>Driveway Advice &amp; Guides</h1>
+    <p class="lede">Straight answers on driveway cost, materials, planning permission and maintenance &mdash; written for Bournemouth, Poole and Dorset homeowners.</p>
+  </div>
+</section>"""
+
+    live = published_posts()  # [(index, post), ...] — only posts whose publish date has arrived
+
+    clusters = []
+    for _, post in live:
+        if post["cluster"] not in clusters:
+            clusters.append(post["cluster"])
+
+    if not live:
+        grouped_html = """
+<section class="section-tight">
+  <div class="container">
+    <p class="lede">New guides are on the way &mdash; check back soon, or explore our driveway type and cost guide pages in the meantime.</p>
+  </div>
+</section>"""
+    else:
+        grouped_html = ""
+        for cluster in clusters:
+            cards = ""
+            for i, post in live:
+                if post["cluster"] != cluster:
+                    continue
+                pub_date_human = blog_publish_date(i).strftime("%d %b %Y")
+                cards += f"""
+      <a class="blog-card" href="{blog_post_href(post['slug'])}">
+        <span class="bc-cluster">{post['cluster']}</span>
+        <span class="bc-date">{pub_date_human}</span>
+        <h3>{post['title']}</h3>
+        <p>{post['excerpt']}</p>
+        <span class="bc-link">Read the guide {ICON_ARROW}</span>
+      </a>"""
+            grouped_html += f"""
+<section class="{'section-tight' if cluster != clusters[0] else ''}">
+  <div class="container">
+    <h2 class="blog-cluster-heading">{cluster}</h2>
+    <div class="blog-grid">{cards}</div>
+  </div>
+</section>"""
+
+    final_cta = cta_band("Have a Question These Guides Didn't Cover?", "Give us a call or request a free quote &mdash; we&rsquo;re happy to talk through your specific project.")
+
+    body = page_hero + trust_bar() + grouped_html + quote_section() + final_cta
+    return page_wrap(
+        "blog.html", body,
+        title="Driveway Guides &amp; Advice | Bournemouth Driveway Pros",
+        description="Straight answers on driveway cost, materials, planning permission and maintenance for Bournemouth, Poole and Dorset homeowners.",
+        canonical_path="blog.html", schema_blocks=schema_blocks
+    )
+
 # =============================================================== WRITE ALL ===
 
 def write(path, content):
@@ -1250,12 +1416,19 @@ def main():
     write("driveways-new-milton.html", build_location_page("new-milton"))
     write("contact.html", build_contact_page())
 
+    write("blog.html", build_blog_index())
+    live_posts = published_posts()
+    for i, post in live_posts:
+        write(blog_post_href(post["slug"]), build_blog_post(i))
+    print(f"blog: {len(live_posts)}/{len(BLOG_POSTS)} posts published as of {_today().isoformat()}")
+
     pages = ["index.html","tarmac-driveways-bournemouth.html","block-paving-bournemouth.html",
              "resin-bound-driveways-bournemouth.html","gravel-driveways-bournemouth.html",
              "driveway-cost-guide-bournemouth.html","faq.html",
              "driveway-repairs-resurfacing-bournemouth.html","dropped-kerb-bournemouth.html",
              "driveways-poole.html","driveways-christchurch.html","driveways-ferndown.html",
-             "driveways-wimborne.html","driveways-new-milton.html","contact.html"]
+             "driveways-wimborne.html","driveways-new-milton.html","contact.html","blog.html"]
+    pages += [blog_post_href(post["slug"]) for _, post in live_posts]
     urlset = "\n".join(f"  <url><loc>{DOMAIN}/{p}</loc><changefreq>monthly</changefreq></url>" for p in pages)
     sitemap = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{urlset}\n</urlset>\n'
     write("sitemap.xml", sitemap)
