@@ -34,6 +34,24 @@ ICON_MAIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-w
 
 STARS = "★★★★★"
 
+# --------------------------------------------------------- photography ----
+# AI-generated (Gemini) driveway photography, licensed for this site's use.
+SWATCH_IMAGE = {
+    "swatch-tarmac": "images/tarmac-driveway.jpg",
+    "swatch-block": "images/block-paving-driveway.jpg",
+    "swatch-resin": "images/resin-bound-driveway.jpg",
+    "swatch-gravel": "images/gravel-driveway.jpg",
+}
+HERO_IMAGE = "images/hero-driveway.jpg"
+
+def swatch_img(swatch, alt, css_class="", loading="lazy"):
+    """Real photo where we have one, falls back to the CSS texture swatch otherwise."""
+    src = SWATCH_IMAGE.get(swatch)
+    cls = f"{css_class} {swatch}".strip()
+    if src:
+        return f'<div class="{cls}"><img src="{src}" alt="{alt}" loading="{loading}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>'
+    return f'<div class="{cls}"></div>'
+
 # ------------------------------------------------------------- nav data ----
 MATERIAL_PAGES = [
     ("Tarmac Driveways", "tarmac-driveways-bournemouth.html", "swatch-tarmac"),
@@ -430,7 +448,7 @@ def build_homepage():
       </ul>
       <a href="driveway-cost-guide-bournemouth.html" class="btn btn-outline-dark" style="margin-top:8px;">See the Full Cost Guide {ICON_ARROW}</a>
     </div>
-    <div class="split-media swatch-resin" style="min-height:320px;"></div>
+    {swatch_img("swatch-resin", "Resin bound driveway, Bournemouth", css_class="split-media")}
   </div>
 </section>"""
 
@@ -449,9 +467,10 @@ def build_homepage():
     )
 
 def material_card(name, href, swatch, blurb, price):
+    img_html = swatch_img(swatch, f"{name} driveway example, Bournemouth", css_class="material-swatch")
     return f"""
       <div class="material-card">
-        <div class="material-swatch {swatch}"><span class="swatch-label">{name}</span></div>
+        {img_html}
         <div class="mc-body">
           <h3>{name} Driveways</h3>
           <p>{blurb}</p>
@@ -528,7 +547,7 @@ def build_material_page(key):
         {"".join(f'<li>{ICON_CHECK} {b}</li>' for b in data['benefits'])}
       </ul>
     </div>
-    <div class="split-media {data['swatch']}"></div>
+    {swatch_img(data['swatch'], f"{data['name']} driveway example", css_class="split-media")}
   </div>
 </section>"""
 
@@ -782,7 +801,7 @@ def build_location_page(key):
         <li>{ICON_CHECK} Most driveways completed in 1&ndash;3 days</li>
       </ul>
     </div>
-    <div class="split-media {data['swatch']}"></div>
+    {swatch_img(data['swatch'], f"{data['name']} driveway example", css_class="split-media")}
   </div>
 </section>"""
 
@@ -1042,7 +1061,7 @@ def build_service_page(key):
         {"".join(f'<li>{ICON_CHECK} {b}</li>' for b in data['benefits'])}
       </ul>
     </div>
-    <div class="split-media {data['swatch']}"></div>
+    {swatch_img(data['swatch'], f"{data.get('name', data.get('h1','Driveway'))} example, Bournemouth", css_class="split-media")}
   </div>
 </section>"""
 
