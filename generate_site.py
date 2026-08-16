@@ -131,7 +131,7 @@ def header(active_href=""):
     mobile_items = "\n".join(
         f'<a href="{href}">{label}</a>' for label, href in [("Home","index.html")] +
         [(l,h) for l,h,_ in MATERIAL_PAGES] +
-        [("Cost Guide","driveway-cost-guide-bournemouth.html"), ("FAQs","faq.html")]
+        [("Cost Guide","driveway-cost-guide-bournemouth.html"), ("FAQs","faq.html"), ("Contact","contact.html")]
     )
     return f"""
 <header class="site-header">
@@ -148,7 +148,7 @@ def header(active_href=""):
       </div>
       <a href="driveway-cost-guide-bournemouth.html">Cost Guide</a>
       <a href="faq.html">FAQs</a>
-      <a href="#quote">Contact</a>
+      <a href="contact.html">Contact</a>
     </nav>
     <div class="nav-cta-group">
       <a href="tel:{PHONE_TEL}" class="nav-phone"><span>{ICON_PHONE}</span>{PHONE_DISPLAY}</a>
@@ -266,6 +266,7 @@ def footer():
         <a href="tel:{PHONE_TEL}">{ICON_PHONE.replace('currentColor','#a9b3c4')} {PHONE_DISPLAY}</a>
         <a href="mailto:{EMAIL}">{EMAIL}</a>
         <p>{ADDRESS_LINE}</p>
+        <a href="contact.html">Contact Us</a>
         <a href="driveway-cost-guide-bournemouth.html">Cost Guide</a>
         <a href="faq.html">FAQs</a>
       </div>
@@ -1178,6 +1179,52 @@ SERVICE_PAGE_DATA = {
     },
 }
 
+# =============================================================== CONTACT PAGE ===
+
+def build_contact_page():
+    schema_blocks = [LOCAL_BUSINESS_SCHEMA]
+    crumbs_html, crumbs_schema = breadcrumbs([("Home", "index.html"), ("Contact", None)])
+    schema_blocks.append(crumbs_schema)
+
+    page_hero = f"""
+<section class="page-hero">
+  <div class="container">
+    {crumbs_html.replace('class="breadcrumbs container"','class="breadcrumbs" style="padding-top:0;color:#9aa6bb;"')}
+    <div class="eyebrow" style="color:var(--gold);">Get In Touch</div>
+    <h1>Contact Bournemouth Driveway Pros</h1>
+    <p class="lede">Questions about your driveway project, or ready for a free quote? Call, email or fill in the form below &mdash; we usually reply within 24 hours.</p>
+    <div class="callout" style="margin-top:28px;max-width:680px;background:rgba(255,255,255,.08);border-left-color:var(--gold);"><p style="color:#e7ebf3;"><strong>Quick answer:</strong> the fastest way to reach us is by phone on {PHONE_DISPLAY} (Mon&ndash;Sat, 8am&ndash;6pm) &mdash; or fill in the free quote form below for a reply within 24 hours.</p></div>
+  </div>
+</section>"""
+
+    details = f"""
+<section>
+  <div class="container split">
+    <div>
+      <div class="eyebrow">Ways to Reach Us</div>
+      <h2>Talk to a Local Driveway Specialist</h2>
+      <ul class="checklist">
+        <li>{ICON_PHONE} <a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a> &mdash; Mon&ndash;Sat, 8am&ndash;6pm</li>
+        <li>{ICON_MAIL} <a href="mailto:{EMAIL}">{EMAIL}</a></li>
+        <li>{ICON_PIN} {ADDRESS_LINE}</li>
+        <li>{ICON_CLOCK} Most quote requests answered within 24 hours</li>
+      </ul>
+      <p class="lede" style="margin-top:20px;">Covering Bournemouth, Poole, Christchurch, Ferndown, Wimborne, New Milton and the surrounding Dorset coast. Got a quick question first? See our <a href="faq.html">FAQs</a>.</p>
+    </div>
+    {quote_form()}
+  </div>
+</section>"""
+
+    final_cta = cta_band("Prefer to Talk It Through?", "Give us a call &mdash; no pressure, just honest advice on the right driveway for your budget.")
+
+    body = page_hero + trust_bar() + details + final_cta
+    return page_wrap(
+        "contact.html", body,
+        title="Contact Us | Bournemouth Driveway Pros",
+        description="Get in touch with Bournemouth Driveway Pros for a free driveway quote. Call, email or use our contact form — we reply within 24 hours.",
+        canonical_path="contact.html", schema_blocks=schema_blocks
+    )
+
 # =============================================================== WRITE ALL ===
 
 def write(path, content):
@@ -1201,13 +1248,14 @@ def main():
     write("driveways-ferndown.html", build_location_page("ferndown"))
     write("driveways-wimborne.html", build_location_page("wimborne"))
     write("driveways-new-milton.html", build_location_page("new-milton"))
+    write("contact.html", build_contact_page())
 
     pages = ["index.html","tarmac-driveways-bournemouth.html","block-paving-bournemouth.html",
              "resin-bound-driveways-bournemouth.html","gravel-driveways-bournemouth.html",
              "driveway-cost-guide-bournemouth.html","faq.html",
              "driveway-repairs-resurfacing-bournemouth.html","dropped-kerb-bournemouth.html",
              "driveways-poole.html","driveways-christchurch.html","driveways-ferndown.html",
-             "driveways-wimborne.html","driveways-new-milton.html"]
+             "driveways-wimborne.html","driveways-new-milton.html","contact.html"]
     urlset = "\n".join(f"  <url><loc>{DOMAIN}/{p}</loc><changefreq>monthly</changefreq></url>" for p in pages)
     sitemap = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{urlset}\n</urlset>\n'
     write("sitemap.xml", sitemap)
